@@ -13,6 +13,7 @@
     "@heroicons/vue": "^2.1.5",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.15",
+    "axios": "^1.7.7",
     "flowbite": "^2.5.2",
     "flowbite-vue": "^0.1.6",
     "pinia": "^2.1.7",
