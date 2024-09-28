@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class', // or 'media' or 'class'
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx,vue}",
@@ -9,6 +10,6 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [require('flowbite/plugin')],
+  plugins: [require('flowbite/plugin'),require('@tailwindcss/aspect-ratio'),require('@tailwindcss/typography')],
 }
 

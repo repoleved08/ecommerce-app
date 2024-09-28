@@ -1,9 +1,9 @@
-<script setup>
-import TheWelcome from '../components/TheWelcome.vue'
-</script>
-
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+ <div class="">
+  <ProductList />
+ </div>
 </template>
+
+<script setup>
+import ProductList from '@/components/ProductList.vue'
+</script>
