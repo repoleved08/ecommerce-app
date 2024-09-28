@@ -34,7 +34,7 @@
                                             :key="category.name" v-slot="{ selected }">
                                             <button
                                                 :class="[selected ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-900', 'flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium']">{{
-                                                category.name }}</button>
+                                                    category.name }}</button>
                                         </Tab>
                                     </TabList>
                                 </div>
@@ -181,7 +181,7 @@
                                                                         class="flex">
                                                                         <a :href="item.href"
                                                                             class="hover:text-gray-800 dark:hover:text-gray-300">{{
-                                                                            item.name }}</a>
+                                                                                item.name }}</a>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -195,7 +195,7 @@
 
                                 <a v-for="page in navigation.pages" :key="page.name" :href="page.href"
                                     class="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">{{
-                                    page.name }}</a>
+                                        page.name }}</a>
                             </div>
                         </PopoverGroup>
 
@@ -243,7 +243,7 @@
                                 </a>
                             </div>
 
-                            <!-- Cart -->
+                            <!-- Cart
                             <div class="ml-4 flow-root lg:ml-6">
                                 <a href="#" class="group -m-2 flex items-center p-2">
                                     <ShoppingBagIcon
@@ -253,7 +253,83 @@
                                         class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200">0</span>
                                     <span class="sr-only">items in cart, view bag</span>
                                 </a>
+                            </div> -->
+                            <!-- Cart -->
+                            <div ref="dropdownContainer" class="relative ml-4 flow-root lg:ml-6">
+                                <button @click="toggleDropdown" class="group -m-2 flex items-center p-2"
+                                    aria-haspopup="true" aria-expanded="dropdownOpen.toString()">
+                                    <ShoppingBagIcon
+                                        class="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-200"
+                                        aria-hidden="true" />
+                                    <span
+                                        class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200">{{
+                                        cartItems.length }}</span>
+                                    <span class="sr-only">items in cart, view bag</span>
+                                </button>
+
+                                <!-- Dropdown Menu -->
+                                <div v-if="dropdownOpen" ref="dropdownMenu"
+                                    class="absolute right-0 z-10 mt-4 w-80 rounded-md bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black ring-opacity-5">
+                                    <div class="py-4 px-4" role="menu" aria-orientation="vertical"
+                                        aria-labelledby="dropdown-button">
+                                        <!-- Cart Items -->
+                                        <template v-if="cartItems.length" v-for="item in cartItems" :key="item.id">
+                                            <div
+                                                class="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                                                <!-- Product Image (Placeholder) -->
+                                                <img src="https://via.placeholder.com/50" alt="item-image"
+                                                    class="w-12 h-12 rounded-lg object-cover">
+                                                <!-- Product Info -->
+                                                <div class="ml-4">
+                                                    <p class="text-gray-800 dark:text-gray-200">{{ item.name }}</p>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Quantity: {{
+                                                        item.quantity }}</p>
+                                                </div>
+                                                <!-- Product Price (Placeholder) -->
+                                                <p class="text-gray-800 dark:text-gray-200 font-medium">$10.00</p>
+                                                <!-- Custom Trash Icon -->
+                                                <button @click="removeItem(item.id)"
+                                                    class="ml-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500">
+                                                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </template>
+
+                                        <!-- If Cart is Empty -->
+                                        <p v-else class="text-center text-gray-500 dark:text-gray-400 py-4">Your cart is
+                                            empty.</p>
+
+                                        <!-- Subtotal and Actions -->
+                                        <div class="mt-4">
+                                            <div
+                                                class="flex justify-between items-center py-2 text-lg font-medium text-gray-800 dark:text-gray-200">
+                                                <span>Total:</span>
+                                                <!-- Placeholder total, adjust accordingly -->
+                                                <span>$30.00</span>
+                                            </div>
+                                            <!-- Checkout and Continue Shopping Links -->
+                                            <div
+                                                class="flex flex-col space-y-2 mt-4 sm:flex-row sm:space-y-0 sm:space-x-2">
+                                                <!-- Continue Shopping -->
+                                                <a href="/continue-shopping"
+                                                    class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 text-sm text-center sm:text-left">
+                                                    Continue Shopping
+                                                </a>
+                                                <!-- Proceed to Checkout -->
+                                                <button
+                                                    class="bg-indigo-600 dark:bg-indigo-500 text-white px-2 py-2 rounded-md hover:bg-indigo-500 dark:hover:bg-indigo-400 w-full sm:w-auto text-center">
+                                                    Proceed to Checkout
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -433,4 +509,23 @@ const navigation = {
 }
 
 const open = ref(false)
+
+//import { TrashIcon } from '@heroicons/vue/outline'
+
+const dropdownOpen = ref(false)
+
+// Hardcoded cart items
+const cartItems = ref([
+    { id: 1, name: 'Product 1', quantity: 2 },
+    { id: 2, name: 'Product 2', quantity: 1 },
+    { id: 3, name: 'Product 3', quantity: 3 },
+])
+
+const toggleDropdown = () => {
+    dropdownOpen.value = !dropdownOpen.value
+}
+
+const removeItem = (id) => {
+    cartItems.value = cartItems.value.filter(item => item.id !== id)
+}
 </script>
