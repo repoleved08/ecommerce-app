@@ -215,13 +215,13 @@
                                             fill-rule="evenodd" clip-rule="evenodd"></path>
                                     </svg>
                                 </button>
-                                <a href="#"
+                                <router-link :to="{ name: 'login' }"
                                     class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Sign
-                                    in</a>
+                                    in</router-link>
                                 <span class="h-6 w-px bg-gray-200 dark:bg-gray-600" aria-hidden="true" />
-                                <a href="#"
+                                <router-link :to="{ name: 'register' }"
                                     class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Create
-                                    account</a>
+                                    account</router-link>
                             </div>
 
                             <div class="hidden lg:ml-8 lg:flex">
@@ -263,7 +263,7 @@
                                         aria-hidden="true" />
                                     <span
                                         class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200">{{
-                                        cartItems.length }}</span>
+                                            cartItems.length }}</span>
                                     <span class="sr-only">items in cart, view bag</span>
                                 </button>
 
