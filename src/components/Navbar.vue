@@ -225,20 +225,21 @@
                                 <div v-else>
                                     <!-- Sign In and Create Account Links -->
                                     <router-link :to="{ name: 'login' }"
-                                    class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Sign
-                                    in</router-link>
-                                <span class="h-6 w-px bg-gray-200 dark:bg-gray-600" aria-hidden="true" />
+                                        class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Sign
+                                        in</router-link>
+                                    <span class="h-6 w-px bg-gray-200 dark:bg-gray-600" aria-hidden="true" />
 
-                                <router-link :to="{ name: 'register' }"
-                                    class="text-sm ml-2 font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Create
-                                    account</router-link>
+                                    <router-link :to="{ name: 'register' }"
+                                        class="text-sm ml-2 font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Create
+                                        account</router-link>
                                 </div>
                             </div>
 
                             <div class="hidden lg:ml-8 lg:flex">
                                 <a href="#"
                                     class="flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">
-                                    <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Flag of USA" class="h-8 w-6">
+                                    <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+                                        alt="Flag of USA" class="h-8 w-6">
 
                                     <span class="ml-3 block text-sm font-medium">USD</span>
                                     <span class="sr-only">, change currency</span>
@@ -252,6 +253,30 @@
                                     <span class="sr-only">Search</span>
                                     <MagnifyingGlassIcon class="h-6 w-6" aria-hidden="true" />
                                 </a>
+                            </div>
+                            <!-- New cart -->
+                            <!-- Cart Dropdown -->
+                            <div class="relative">
+                                <button class="text-gray-800 dark:text-gray-100" @click="toggleCartDropdown">
+                                    Cart ({{ cartItemz.length }}) <!-- Display item count -->
+                                </button>
+
+                                <!-- Dropdown with Cart Items -->
+                                <div v-if="isCartDropdownOpen"
+                                    class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
+                                    <div class="py-1" role="menu" aria-orientation="vertical"
+                                        aria-labelledby="cart-menu">
+                                        <p v-if="cartItemz.length === 0"
+                                            class="px-4 py-2 text-sm text-gray-700 dark:text-gray-100">Your cart is
+                                            empty.</p>
+                                        <div v-else>
+                                            <div v-for="item in cartItemz" :key="item.id"
+                                                class="px-4 py-2 text-sm text-gray-700 dark:text-gray-100">
+                                                {{ item.product_name }} - ${{ item.price }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Cart
@@ -273,8 +298,7 @@
                                         class="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-200"
                                         aria-hidden="true" />
                                     <span
-                                        class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200">{{
-                                            cartItems.length }}</span>
+                                        class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200">{{ cartItemz.length }}</span>
                                     <span class="sr-only">items in cart, view bag</span>
                                 </button>
 
@@ -284,11 +308,11 @@
                                     <div class="py-4 px-4" role="menu" aria-orientation="vertical"
                                         aria-labelledby="dropdown-button">
                                         <!-- Cart Items -->
-                                        <template v-if="cartItems.length" v-for="item in cartItems" :key="item.id">
+                                        <template v-if="cartItemz.length" v-for="item in cartItemz" :key="item.id">
                                             <div
                                                 class="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700">
                                                 <!-- Product Image (Placeholder) -->
-                                                <img src="https://via.placeholder.com/50" alt="item-image"
+                                                <img :src="item.image_url" alt="item-image"
                                                     class="w-12 h-12 rounded-lg object-cover">
                                                 <!-- Product Info -->
                                                 <div class="ml-4">
@@ -297,7 +321,7 @@
                                                         item.quantity }}</p>
                                                 </div>
                                                 <!-- Product Price (Placeholder) -->
-                                                <p class="text-gray-800 dark:text-gray-200 font-medium">$10.00</p>
+                                                <p class="text-gray-800 dark:text-gray-200 font-medium">${{ item.price }}</p>
                                                 <!-- Custom Trash Icon -->
                                                 <button @click="removeItem(item.id)"
                                                     class="ml-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500">
@@ -320,7 +344,7 @@
                                                 class="flex justify-between items-center py-2 text-lg font-medium text-gray-800 dark:text-gray-200">
                                                 <span>Total:</span>
                                                 <!-- Placeholder total, adjust accordingly -->
-                                                <span>$30.00</span>
+                                                <span>${{ totalPrice }}</span>
                                             </div>
                                             <!-- Checkout and Continue Shopping Links -->
                                             <div
@@ -351,14 +375,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useUserStore } from '@/stores/userStore'
+import { useCartStore } from '@/stores/cartStore';
 import { useRouter } from 'vue-router'
 
 
 const userStore = useUserStore()
 const router = useRouter()
+const cartStore = useCartStore(); 
+const cart = computed(() => cartStore.cart);
 
 
 // Create a reactive variable for dark mode state
@@ -532,6 +558,24 @@ const open = ref(false)
 
 const dropdownOpen = ref(false)
 
+// Compute the cart items from the store
+const cartItemz = computed(() => cartStore.cart);
+
+// Control dropdown visibility
+const isCartDropdownOpen = ref(false);
+
+// Toggle cart dropdown
+const toggleCartDropdown = () => {
+    isCartDropdownOpen.value = !isCartDropdownOpen.value;
+};
+
+// Computed property to calculate total price
+const totalPrice = computed(() => {
+  return cart.value.reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, 0);
+});
+
 // Hardcoded cart items
 const cartItems = ref([
     { id: 1, name: 'Product 1', quantity: 2 },
@@ -552,10 +596,10 @@ const isAuthenticated = computed(() => !!localStorage.getItem('token'));
 
 // Logout function
 const logout = () => {
-  // Call the logout action in the store
-  userStore.logout();
-  // Redirect to the home page after logout
-  router.push({ name: 'home' });
-  window.location.reload();
+    // Call the logout action in the store
+    userStore.logout();
+    // Redirect to the home page after logout
+    router.push({ name: 'home' });
+    window.location.reload();
 };
 </script>

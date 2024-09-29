@@ -1,3 +1,38 @@
+<script setup>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
+import { FwbToast } from 'flowbite-vue'  // Importing the toast component
+
+const userStore = useUserStore()
+const router = useRouter()
+
+const form = ref({
+    username: '',
+    email: '',
+    password: ''
+})
+
+const error = computed(() => userStore.error)
+const loading = computed(() => userStore.loading)
+
+const showSuccessToast = ref(false) // State for showing the success toast
+
+const registerUser = async () => {
+    await userStore.register(form.value)
+
+    if (!userStore.error) {
+        // Show the success toast
+        showSuccessToast.value = true
+
+        // Wait for 2 seconds before redirecting to the login page
+        setTimeout(() => {
+            router.push({ name: 'login' })
+        }, 2000)  // 2 seconds delay
+    }
+}
+</script>
+
 <template>
     <div
         class="w-full max-w-sm mx-auto my-5 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -34,36 +69,14 @@
                 class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 {{ loading ? 'Registering...' : 'Register your account' }} </button>
             <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
-                already registered? <router-link :to="{ name: 'login' }"
+                Already registered? <router-link :to="{ name: 'login' }"
                     class="text-blue-700 hover:underline dark:text-blue-500">Login to your account</router-link>
             </div>
         </form>
+
+        <!-- Success Toast -->
+        <fwb-toast v-if="showSuccessToast" divide type="success">
+            Registration successful! Redirecting to login...
+        </fwb-toast>
     </div>
 </template>
-
-<script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import {useUserStore} from '@/stores/userStore'
-
-const userStore = useUserStore()
-const router = useRouter()
-
-const form = ref({
-    username: '',
-    email: '',
-    password: ''
-})
-
-const error = computed(() => userStore.error)
-const loading = computed(() => userStore.loading)
-
-const registerUser = async () => {
-    await userStore.register(form.value)
-    if (!userStore.error) {
-        alert('Registration successful. Please login to continue')
-        router.push({ name: 'login' })
-    }
-}
-
-</script>
