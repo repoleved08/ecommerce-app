@@ -27,6 +27,7 @@ export const useCartStore = defineStore('cart', {
             this.error = null
             try {
                 const response = await cartService.addToCart(productId)
+                console.log(response.data)
                 this.cart.push(response.data)
                 return response
             } catch (error) {
@@ -41,7 +42,7 @@ export const useCartStore = defineStore('cart', {
             this.error = null
             try {
                 const response = await cartService.removeFromCart(productId)
-                this.cart = this.cart.filter((item) => item.productId !== productId)
+                this.cart = this.cart.filter((item) => item.product_id !== productId)
                 return response
             } catch (error) {
                 this.error = error.response?.data.error || 'Error removing from cart'

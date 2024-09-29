@@ -254,42 +254,6 @@
                                     <MagnifyingGlassIcon class="h-6 w-6" aria-hidden="true" />
                                 </a>
                             </div>
-                            <!-- New cart -->
-                            <!-- Cart Dropdown -->
-                            <div class="relative">
-                                <button class="text-gray-800 dark:text-gray-100" @click="toggleCartDropdown">
-                                    Cart ({{ cartItemz.length }}) <!-- Display item count -->
-                                </button>
-
-                                <!-- Dropdown with Cart Items -->
-                                <div v-if="isCartDropdownOpen"
-                                    class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
-                                    <div class="py-1" role="menu" aria-orientation="vertical"
-                                        aria-labelledby="cart-menu">
-                                        <p v-if="cartItemz.length === 0"
-                                            class="px-4 py-2 text-sm text-gray-700 dark:text-gray-100">Your cart is
-                                            empty.</p>
-                                        <div v-else>
-                                            <div v-for="item in cartItemz" :key="item.id"
-                                                class="px-4 py-2 text-sm text-gray-700 dark:text-gray-100">
-                                                {{ item.product_name }} - ${{ item.price }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Cart
-                            <div class="ml-4 flow-root lg:ml-6">
-                                <a href="#" class="group -m-2 flex items-center p-2">
-                                    <ShoppingBagIcon
-                                        class="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-200"
-                                        aria-hidden="true" />
-                                    <span
-                                        class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200">0</span>
-                                    <span class="sr-only">items in cart, view bag</span>
-                                </a>
-                            </div> -->
                             <!-- Cart -->
                             <div ref="dropdownContainer" class="relative ml-4 flow-root lg:ml-6">
                                 <button @click="toggleDropdown" class="group -m-2 flex items-center p-2"
@@ -308,22 +272,22 @@
                                     <div class="py-4 px-4" role="menu" aria-orientation="vertical"
                                         aria-labelledby="dropdown-button">
                                         <!-- Cart Items -->
-                                        <template v-if="cartItemz.length" v-for="item in cartItemz" :key="item.id">
+                                        <template v-if="cartItemz.length" v-for="item in cartItemz" :key="item.product_id">
                                             <div
                                                 class="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700">
                                                 <!-- Product Image (Placeholder) -->
-                                                <img :src="item.image_url" alt="item-image"
+                                                <img :src="item.image_url" alt="{{ item.product_name }}"
                                                     class="w-12 h-12 rounded-lg object-cover">
                                                 <!-- Product Info -->
                                                 <div class="ml-4">
-                                                    <p class="text-gray-800 dark:text-gray-200">{{ item.name }}</p>
+                                                    <p class="text-gray-800 dark:text-gray-200">{{ item.product_name }}</p>
                                                     <p class="text-sm text-gray-500 dark:text-gray-400">Quantity: {{
                                                         item.quantity }}</p>
                                                 </div>
                                                 <!-- Product Price (Placeholder) -->
                                                 <p class="text-gray-800 dark:text-gray-200 font-medium">${{ item.price }}</p>
                                                 <!-- Custom Trash Icon -->
-                                                <button @click="removeItem(item.id)"
+                                                <button @click="removeItem(item.product_id)"
                                                     class="ml-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500">
                                                     <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -355,10 +319,10 @@
                                                     Continue Shopping
                                                 </a>
                                                 <!-- Proceed to Checkout -->
-                                                <button
+                                                <router-link to="/payment"
                                                     class="bg-indigo-600 dark:bg-indigo-500 text-white px-2 py-2 rounded-md hover:bg-indigo-500 dark:hover:bg-indigo-400 w-full sm:w-auto text-center">
                                                     Proceed to Checkout
-                                                </button>
+                                            </router-link>
                                             </div>
                                         </div>
                                     </div>
@@ -576,20 +540,21 @@ const totalPrice = computed(() => {
   }, 0);
 });
 
-// Hardcoded cart items
-const cartItems = ref([
-    { id: 1, name: 'Product 1', quantity: 2 },
-    { id: 2, name: 'Product 2', quantity: 1 },
-    { id: 3, name: 'Product 3', quantity: 3 },
-])
+const removeItem = async (product_id) => {
+   try {
+    await cartStore.removeFromCart(product_id);
+    console.log('Item removed from cart:', product_id);
+    } catch (error) {
+    console.error('Failed to remove item from cart:', error);
+    }
+    
+};
 
 const toggleDropdown = () => {
     dropdownOpen.value = !dropdownOpen.value
 }
 
-const removeItem = (id) => {
-    cartItems.value = cartItems.value.filter(item => item.id !== id)
-}
+
 
 // Check if user is authenticated
 const isAuthenticated = computed(() => !!localStorage.getItem('token'));
