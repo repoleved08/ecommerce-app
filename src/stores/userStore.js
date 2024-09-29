@@ -12,7 +12,6 @@ export const useUserStore = defineStore('user', {
         isAuthenticated: (state) => !!state.token,
     },
     actions: {
-        // Pinia Store (userStore.js)
         async login(credentials) {
             this.loading = true;
             this.error = null;
@@ -55,10 +54,5 @@ export const useUserStore = defineStore('user', {
                 this.loading = false;
             }
         },
-        // async getUserProfile() {
-        //   const response = await userService.getUserProfile();
-        //   this.user = response.data;
-        //   return response;
-        // },
     },
 });
