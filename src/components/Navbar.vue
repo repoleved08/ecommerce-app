@@ -215,21 +215,32 @@
                                             fill-rule="evenodd" clip-rule="evenodd"></path>
                                     </svg>
                                 </button>
-                                <router-link :to="{ name: 'login' }"
+                                <div v-if="isAuthenticated">
+                                    <!-- Logout Button -->
+                                    <button @click="logout"
+                                        class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">
+                                        Logout
+                                    </button>
+                                </div>
+                                <div v-else>
+                                    <!-- Sign In and Create Account Links -->
+                                    <router-link :to="{ name: 'login' }"
                                     class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Sign
                                     in</router-link>
                                 <span class="h-6 w-px bg-gray-200 dark:bg-gray-600" aria-hidden="true" />
+
                                 <router-link :to="{ name: 'register' }"
-                                    class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Create
+                                    class="text-sm ml-2 font-medium text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">Create
                                     account</router-link>
+                                </div>
                             </div>
 
                             <div class="hidden lg:ml-8 lg:flex">
                                 <a href="#"
                                     class="flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">
-                                    <img src="https://tailwindui.com/img/flags/flag-canada.svg" alt="Canada Flag"
-                                        class="block h-auto w-5 flex-shrink-0" />
-                                    <span class="ml-3 block text-sm font-medium">CAD</span>
+                                    <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Flag of USA" class="h-8 w-6">
+
+                                    <span class="ml-3 block text-sm font-medium">USD</span>
                                     <span class="sr-only">, change currency</span>
                                 </a>
                             </div>
@@ -341,6 +352,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
+import { useUserStore } from '@/stores/userStore'
+import { useRouter } from 'vue-router'
+
+
+const userStore = useUserStore()
+const router = useRouter()
+
 
 // Create a reactive variable for dark mode state
 const isDark = ref(false)
@@ -355,7 +374,6 @@ const toggleTheme = () => {
         localStorage.setItem('color-theme', 'light')
     }
 }
-
 // Check for saved theme preference or system preference
 onMounted(() => {
     if (localStorage.getItem('color-theme') === 'dark' ||
@@ -528,4 +546,16 @@ const toggleDropdown = () => {
 const removeItem = (id) => {
     cartItems.value = cartItems.value.filter(item => item.id !== id)
 }
+
+// Check if user is authenticated
+const isAuthenticated = computed(() => !!localStorage.getItem('token'));
+
+// Logout function
+const logout = () => {
+  // Call the logout action in the store
+  userStore.logout();
+  // Redirect to the home page after logout
+  router.push({ name: 'home' });
+  window.location.reload();
+};
 </script>

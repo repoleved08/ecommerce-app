@@ -5,17 +5,15 @@ import Footer from '@/components/Footer.vue'
 </script>
 
 <template>
-  
   <div class="dark:bg-gray-800 dark:border-gray-700 bg-white">
     <header>
-    <div>
-      <nav>
-        <Navbar />
-      </nav>
-    </div>
-  </header>
+      <div>
+        <nav>
+          <Navbar />
+        </nav>
+      </div>
+    </header>
     <RouterView />
     <Footer />
   </div>
- 
 </template>
